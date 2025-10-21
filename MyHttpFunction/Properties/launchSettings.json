@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "MyFuncApp": {
+    "MyHttpFunction": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7096",
+      "commandLineArgs": "--port 7091",
       "launchBrowser": false
     }
   }
