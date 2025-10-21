@@ -1,0 +1,1 @@
+Timer function , we have to start >azurite start all services
