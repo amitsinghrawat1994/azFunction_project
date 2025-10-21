@@ -57,9 +57,9 @@ public class HttpExample
         return res;
     }
 
-    // 2) GET with route parameter: /api/items/{id}
+    // 2) GET with route parameter: /api/items/{id} 
     [Function("GetItemById")]
-    public HttpResponseData GetItemById(
+    public async Task<HttpResponseData> GetItemById(
         [HttpTrigger(AuthorizationLevel.Function, "get", Route = "items/{id}")] HttpRequestData req,
         string id,
         FunctionContext context)
@@ -71,14 +71,14 @@ public class HttpExample
         if (id != "1")
         {
             var notFound = req.CreateResponse(HttpStatusCode.NotFound);
-            notFound.WriteString($"Item {id} not found");
+            await notFound.WriteStringAsync($"Item {id} not found");
             return notFound;
         }
 
         var item = new ItemDto { Id = "1", Name = "Apple", Quantity = 10 };
         var res = req.CreateResponse(HttpStatusCode.OK);
         res.Headers.Add("Content-Type", "application/json");
-        res.WriteString(JsonSerializer.Serialize(item));
+        await res.WriteStringAsync(JsonSerializer.Serialize(item));
         return res;
     }
 
@@ -95,7 +95,7 @@ public class HttpExample
         if (string.IsNullOrWhiteSpace(body))
         {
             var bad = req.CreateResponse(HttpStatusCode.BadRequest);
-            bad.WriteString("Empty request body");
+            await bad.WriteStringAsync("Empty request body");
             return bad;
         }
 
@@ -110,7 +110,7 @@ public class HttpExample
         {
             logger.LogError($"JSON parse error: {ex.Message}");
             var bad = req.CreateResponse(HttpStatusCode.BadRequest);
-            bad.WriteString("Invalid JSON body");
+            await bad.WriteStringAsync("Invalid JSON body");
             return bad;
         }
 
@@ -118,7 +118,7 @@ public class HttpExample
         if (string.IsNullOrWhiteSpace(item.Name))
         {
             var bad = req.CreateResponse(HttpStatusCode.BadRequest);
-            bad.WriteString("Name is required");
+            await bad.WriteStringAsync("Name is required");
             return bad;
         }
 
@@ -127,7 +127,7 @@ public class HttpExample
 
         var created = req.CreateResponse(HttpStatusCode.Created);
         created.Headers.Add("Content-Type", "application/json");
-        created.WriteString(JsonSerializer.Serialize(item));
+        await created.WriteStringAsync(JsonSerializer.Serialize(item));
         // optionally set Location header:
         created.Headers.Add("Location", $"/api/items/{item.Id}");
         return created;
